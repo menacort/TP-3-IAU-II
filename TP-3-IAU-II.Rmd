@@ -15,19 +15,20 @@ output: html_document
 ```{r}
 library(tidyverse)
 library(dplyr)
+library(ggplot2)
 ```
 
-*En este TP voy a analizar las obras urbanas del Gobierno de la Ciudad*
+*En este TP voy a analizar las obras urbanas del Gobierno de la Ciudad. El objetivo del TP es identificar en que barrio se realizaron mayor cantidad de obras y a que rubros pertenecen entre 2015 y 2020 en GCBA.*
 
 *Ahora voy a cargar el dataset*
-
+ 
 
 ```{r}
 data <- read.csv("http://cdn.buenosaires.gob.ar/datosabiertos/datasets/ba-obras/observatorio-de-obras-urbanas.csv", encoding = "UTF-8")
 ```
 
 
-*Para iniciar el analisis voy a identificar las diferentes obras*
+*Para iniciar el analisis voy a identificar las obras por las distintas areas responsables*
 
 
 ```{r}
@@ -42,15 +43,7 @@ data <- data %>% mutate (tipo = case_when(
                 ))
 ```
 
-*Una vez filtrado el dataset, voy a visualizar los datos*
-
-```{r}
-ggplot(data = data, mapping = aes(x = tipo, y = monto_contrato)) +
-  geom_bar(stat = "identity") 
-```
-
-
-*Ahora voy a realizar de manera más profunda esa información agregando los titulos y demás datos acordes a la descripción*
+*Una vez analizadas según el tipo de obra, voy a visualizar los obras por monto según las areas responsables*
 
 
 ```{r}
@@ -63,5 +56,53 @@ ggplot(data = data) +
        caption = "Fuente: Buenos Aires Data")
 ```
 
+
+Se puede identificar que las obras de Transporte e Infraestructura son las que demandaron mayor presupuesto. 
+
+
+Para identificar la cantidad de obras realizadas por barrios voy a graficar según el barrio la cantidad de obras y dentro del mismo grafico, el area responsable por las obras llevadas a cabo.
+
+
+```{r}
+ ggplot(data = data) +
+    geom_bar(aes(x = barrio, fill = area_responsable)) +
+    coord_flip()+
+  labs(title = "Obras publicas por barrio según area responsable", 
+       subtitle = "Obras Públicas según barrio", 
+       x = "Barrio", 
+       y = "Cantidad", 
+       caption = "Fuente: Buenos Aires Data")
+```
+
+Como se puede ver en el grafico, el barrio con mayor cantidad de obras es el del sur de la ciudad: Villa Soldati a cargo de distintas areas, pero en su mayoria corresponden al area Corporación Sur, como se distingue en el gráfico son más de 100 las realizadas.
+
+
+Voy a identificar en datalle las areas participantes de las obras de Villa Soldati
+
+
+```{r}
+villasoldati <- filter (data, barrio == "Villa Soldati")
+```
+
+```{r}
+count(villasoldati)
+```
+
+Identificamos que son 126 las obras realizadas en el barrio de Villa Soldati.
+
+
+```{r}
+ ggplot(data = villasoldati) +
+    geom_bar(aes(x = barrio, fill = area_responsable)) +
+    coord_flip()+
+  labs(title = "Obras publicas en Villa Soldati", 
+       subtitle = "Según area responsable", 
+       x = "Villa Soldati", 
+       y = "Cantidad de obras", 
+       caption = "Fuente: Buenos Aires Data")
+```
+
+
+Para concluir se puede señalar que el barrio con mayor cantidad de obra pública, fue el de Villa Soldati correspondientes a distintas areas de Gobierno.
 
 
