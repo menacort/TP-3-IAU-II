@@ -1,0 +1,67 @@
+---
+title: "TP-3-IAU-II"
+author: "Magdalena Cortiñas"
+date: "2/10/2021"
+output: html_document
+---
+
+
+**TP 3
+
+
+*Voy a iniciar por cargar las librerias a utilizar.*
+
+
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+*En este TP voy a analizar las obras urbanas del Gobierno de la Ciudad*
+
+*Ahora voy a cargar el dataset*
+
+
+```{r}
+data <- read.csv("http://cdn.buenosaires.gob.ar/datosabiertos/datasets/ba-obras/observatorio-de-obras-urbanas.csv", encoding = "UTF-8")
+```
+
+
+*Para iniciar el analisis voy a identificar las diferentes obras*
+
+
+```{r}
+data <- data %>% mutate (tipo = case_when(
+                tipo == "Escuelas" ~ "ESC",
+                tipo == "Espacio Público" ~ "EP",
+                tipo == "Vivienda" ~ "VIV",
+                tipo == "Hidráulica e Infraestructura" ~ "INF",
+                tipo == "Arquitectura" ~ "ARQ",
+                tipo == "Salud" ~ "SAL",
+                tipo == "Transporte" ~ "TRA",
+                ))
+```
+
+*Una vez filtrado el dataset, voy a visualizar los datos*
+
+```{r}
+ggplot(data = data, mapping = aes(x = tipo, y = monto_contrato)) +
+  geom_bar(stat = "identity") 
+```
+
+
+*Ahora voy a realizar de manera más profunda esa información agregando los titulos y demás datos acordes a la descripción*
+
+
+```{r}
+ggplot(data = data) +
+  geom_bar( mapping = aes(x = tipo, y = monto_contrato), stat = "identity") +
+  labs(title = "Montos de Obras Públicas en la Ciudad", 
+       subtitle = "Obras Públicas según el tipo", 
+       x = "Tipo de obra", 
+       y = "Monto", 
+       caption = "Fuente: Buenos Aires Data")
+```
+
+
+
